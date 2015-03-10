@@ -3,11 +3,11 @@
 \alias{recommenderlabrats}
 \docType{package}
 \title{
-What the package does (short line)
+This package implements some practical recommendation engines
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Currently implemented -
+Low Rank Matrix Factorization
 }
 \details{
 \tabular{ll}{
@@ -17,15 +17,17 @@ Version: \tab 1.0\cr
 Date: \tab 2015-03-10\cr
 License: \tab GPL (>= 2)\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+Follow the vignette of recommenderlab to see how to test.
+A walkthrough is also available on sanealytics.com
 }
 \author{
-Your Name
+Saurabh Bhatnagar
 
-Maintainer: Your Name <your@email.com>
+Maintainer: Saurabh Bhatnagar <Saurabh.Bhatnagar@gmail.com>
 }
 \references{
-~~ Literature or other references for background information ~~
+Simon Funk
+Koren et all
 }
 ~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R ~~
 ~~ documentation directory ~~
