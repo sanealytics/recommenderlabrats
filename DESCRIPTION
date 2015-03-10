@@ -1,0 +1,11 @@
+Package: recommenderlabrats
+Type: Package
+Title: Recommender algorithms for fun and profit
+Version: 1.0
+Date: 2015-03-10
+Author: Saurabh Bhatnagar
+Maintainer: Saurabh Bhatnagar <saurabh.bhatnagar@gmail.com>
+Description: An assortment of practical recommender algorithms
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.11.3), recommenderlab (>= 0.1-5)
+LinkingTo: Rcpp
