@@ -1,3 +1,5 @@
 useDynLib(recommenderlabrats)
-exportPattern("^[[:alpha:]]+")
+import(RcppArmadillo)
 importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
+import(recommenderlab)

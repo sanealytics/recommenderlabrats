@@ -10,7 +10,8 @@ REAL_RSVD <- function(data, parameter= NULL) {
     sampSize = NULL,
     scaleFlg = FALSE,
     item_bias_fn=function(x) {0},
-    maxit = 100 # Number of iterations for optim
+    maxit = 100, # Number of iterations for optim
+    optimize = function(...) {optim(method = "L-BFGS-B", ...)}
   ), parameter)
   
   model <- c(list(
@@ -64,11 +65,11 @@ REAL_RSVD <- function(data, parameter= NULL) {
     }
     
     print(system.time(
-      res <- optim(par = runif(num_movies * num_features + num_users * num_features), 
+      res <- model$optimize(par = runif(num_movies * num_features + num_users * num_features), 
                    fn = J_cost, gr = grr, 
                    Y=Y, R=R, 
                    num_users=num_users, num_movies=num_movies,num_features=num_features, 
-                   lambda=lambda, method = "L-BFGS-B", control=list(maxit=maxit, trace=1)) 
+                   lambda=lambda, control=list(maxit=maxit, trace=1)) 
     ))    
     
     print(paste("final cost: ", res$value, " convergence: ", res$convergence, 

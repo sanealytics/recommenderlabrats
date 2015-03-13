@@ -7,6 +7,6 @@ Author: Saurabh Bhatnagar
 Maintainer: Saurabh Bhatnagar <saurabh.bhatnagar@gmail.com>
 Description: An assortment of practical recommender algorithms
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.11.3)
-Depends: recommenderlab (>= 0.1-3)
-LinkingTo: Rcpp
+Imports: Rcpp (>= 0.11.3), RcppArmadillo
+Depends: recommenderlab (>= 0.1-3), RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo
