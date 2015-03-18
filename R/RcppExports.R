@@ -5,6 +5,26 @@ als <- function(X, Theta, Y, R, lambda, alpha, batches, epsilon, checkInterval) 
     .Call('recommenderlabrats_als', PACKAGE = 'recommenderlabrats', X, Theta, Y, R, lambda, alpha, batches, epsilon, checkInterval)
 }
 
+updateImplicitX <- function(X, Y, P, C, lambda) {
+    invisible(.Call('recommenderlabrats_updateImplicitX', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda))
+}
+
+updateImplicitY <- function(X, Y, P, C, lambda) {
+    invisible(.Call('recommenderlabrats_updateImplicitY', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda))
+}
+
+implicitCost <- function(X, Y, P, C, lambda) {
+    .Call('recommenderlabrats_implicitCost', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda)
+}
+
+implicit <- function(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval) {
+    .Call('recommenderlabrats_implicit', PACKAGE = 'recommenderlabrats', init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval)
+}
+
+explain_predict <- function(X, Y, P, C, lambda, u) {
+    .Call('recommenderlabrats_explain_predict', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda, u)
+}
+
 rcpp_hello_world <- function() {
     .Call('recommenderlabrats_rcpp_hello_world', PACKAGE = 'recommenderlabrats')
 }

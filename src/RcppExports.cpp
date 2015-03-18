@@ -29,6 +29,99 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// updateImplicitX
+void updateImplicitX(arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda);
+RcppExport SEXP recommenderlabrats_updateImplicitX(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        updateImplicitX(X, Y, P, C, lambda);
+    }
+    return R_NilValue;
+END_RCPP
+}
+// updateImplicitY
+void updateImplicitY(const arma::mat& X, arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda);
+RcppExport SEXP recommenderlabrats_updateImplicitY(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        updateImplicitY(X, Y, P, C, lambda);
+    }
+    return R_NilValue;
+END_RCPP
+}
+// implicitCost
+double implicitCost(const arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda);
+RcppExport SEXP recommenderlabrats_implicitCost(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        double __result = implicitCost(X, Y, P, C, lambda);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// implicit
+List implicit(const arma::mat& init_X, const arma::mat& init_Y, const arma::mat& P, const arma::mat& C, double lambda, int batches, double epsilon, int checkInterval);
+RcppExport SEXP recommenderlabrats_implicit(SEXP init_XSEXP, SEXP init_YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP batchesSEXP, SEXP epsilonSEXP, SEXP checkIntervalSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type init_X(init_XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type init_Y(init_YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        Rcpp::traits::input_parameter< int >::type batches(batchesSEXP );
+        Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP );
+        Rcpp::traits::input_parameter< int >::type checkInterval(checkIntervalSEXP );
+        List __result = implicit(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// explain_predict
+arma::mat explain_predict(const arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda, int u);
+RcppExport SEXP recommenderlabrats_explain_predict(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        Rcpp::traits::input_parameter< int >::type u(uSEXP );
+        arma::mat __result = explain_predict(X, Y, P, C, lambda, u);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // rcpp_hello_world
 List rcpp_hello_world();
 RcppExport SEXP recommenderlabrats_rcpp_hello_world() {
