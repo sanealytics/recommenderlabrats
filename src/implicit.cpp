@@ -24,7 +24,6 @@ void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, co
   arma::mat fact_eye = eye(num_prods, num_prods);
   arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
 
-  // TODO: Randomize order of users
 #pragma omp parallel for
   for (int u = 0; u < C.n_rows; u++) {
     arma::mat Cu = diagmat(C.row(u));
@@ -49,7 +48,6 @@ void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, co
   arma::mat fact_eye = eye(num_users, num_users);
   arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
 
-  // TODO: Randomize order of items
 #pragma omp parallel for
   for (int i = 0; i < C.n_cols; i++) {
     arma::mat Ci = diagmat(C.col(i));

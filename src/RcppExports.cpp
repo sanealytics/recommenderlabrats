@@ -6,23 +6,79 @@
 
 using namespace Rcpp;
 
-// als
-List als(arma::mat& X, arma::mat& Theta, arma::mat& Y, arma::mat& R, double lambda, double alpha, int batches, double epsilon, int checkInterval);
-RcppExport SEXP recommenderlabrats_als(SEXP XSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP RSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP batchesSEXP, SEXP epsilonSEXP, SEXP checkIntervalSEXP) {
+// alsCost
+double alsCost(const arma::mat& X, const arma::mat& Theta, const arma::mat& Y, const arma::mat& R, double lambda);
+RcppExport SEXP recommenderlabrats_alsCost(SEXP XSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP RSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Theta(ThetaSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        double __result = alsCost(X, Theta, Y, R, lambda);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// alsUpdateX
+void alsUpdateX(arma::mat& X, const arma::mat& Theta, const arma::mat& Y, const arma::mat& R, double lambda, double alpha, bool batchMode);
+RcppExport SEXP recommenderlabrats_alsUpdateX(SEXP XSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP RSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP batchModeSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Theta(ThetaSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP );
+        Rcpp::traits::input_parameter< bool >::type batchMode(batchModeSEXP );
+        alsUpdateX(X, Theta, Y, R, lambda, alpha, batchMode);
+    }
+    return R_NilValue;
+END_RCPP
+}
+// alsUpdateTheta
+void alsUpdateTheta(const arma::mat& X, arma::mat& Theta, const arma::mat& Y, const arma::mat& R, double lambda, double alpha, bool batchMode);
+RcppExport SEXP recommenderlabrats_alsUpdateTheta(SEXP XSEXP, SEXP ThetaSEXP, SEXP YSEXP, SEXP RSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP batchModeSEXP) {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP );
         Rcpp::traits::input_parameter< arma::mat& >::type Theta(ThetaSEXP );
-        Rcpp::traits::input_parameter< arma::mat& >::type Y(YSEXP );
-        Rcpp::traits::input_parameter< arma::mat& >::type R(RSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP );
+        Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
+        Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP );
+        Rcpp::traits::input_parameter< bool >::type batchMode(batchModeSEXP );
+        alsUpdateTheta(X, Theta, Y, R, lambda, alpha, batchMode);
+    }
+    return R_NilValue;
+END_RCPP
+}
+// als
+List als(const arma::mat init_X, const arma::mat init_Theta, const arma::mat& Y, const arma::mat& R, double lambda, double alpha, int batches, double epsilon, int checkInterval, bool batchMode);
+RcppExport SEXP recommenderlabrats_als(SEXP init_XSEXP, SEXP init_ThetaSEXP, SEXP YSEXP, SEXP RSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP batchesSEXP, SEXP epsilonSEXP, SEXP checkIntervalSEXP, SEXP batchModeSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const arma::mat >::type init_X(init_XSEXP );
+        Rcpp::traits::input_parameter< const arma::mat >::type init_Theta(init_ThetaSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP );
+        Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP );
         Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
         Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP );
         Rcpp::traits::input_parameter< int >::type batches(batchesSEXP );
         Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP );
         Rcpp::traits::input_parameter< int >::type checkInterval(checkIntervalSEXP );
-        List __result = als(X, Theta, Y, R, lambda, alpha, batches, epsilon, checkInterval);
+        Rcpp::traits::input_parameter< bool >::type batchMode(batchModeSEXP );
+        List __result = als(init_X, init_Theta, Y, R, lambda, alpha, batches, epsilon, checkInterval, batchMode);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
