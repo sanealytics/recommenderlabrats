@@ -17,20 +17,20 @@ als <- function(init_X, init_Theta, Y, R, lambda, alpha, batches, epsilon, check
     .Call('recommenderlabrats_als', PACKAGE = 'recommenderlabrats', init_X, init_Theta, Y, R, lambda, alpha, batches, epsilon, checkInterval, batchMode)
 }
 
-updateImplicitX <- function(X, Y, P, C, lambda) {
-    invisible(.Call('recommenderlabrats_updateImplicitX', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda))
+updateImplicitX <- function(X, Y, P, C, lambda, cores) {
+    invisible(.Call('recommenderlabrats_updateImplicitX', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda, cores))
 }
 
-updateImplicitY <- function(X, Y, P, C, lambda) {
-    invisible(.Call('recommenderlabrats_updateImplicitY', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda))
+updateImplicitY <- function(X, Y, P, C, lambda, cores) {
+    invisible(.Call('recommenderlabrats_updateImplicitY', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda, cores))
 }
 
 implicitCost <- function(X, Y, P, C, lambda) {
     .Call('recommenderlabrats_implicitCost', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda)
 }
 
-implicit <- function(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval) {
-    .Call('recommenderlabrats_implicit', PACKAGE = 'recommenderlabrats', init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval)
+implicit <- function(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval, cores = 1L) {
+    .Call('recommenderlabrats_implicit', PACKAGE = 'recommenderlabrats', init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval, cores)
 }
 
 explain_predict <- function(X, Y, P, C, lambda, u) {

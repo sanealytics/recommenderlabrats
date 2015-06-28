@@ -10,7 +10,8 @@ REAL_IMPLICIT <- function(data, parameter= NULL) {
     sampSize = NULL,
     scaleFlg = FALSE,
     item_bias_fn=function(x) {0},
-    maxit = 100 # Number of iterations 
+    maxit = 100, # Number of iterations 
+    num_cores_per_batch = 1
   ), parameter)
   
   model <- c(list(
@@ -72,7 +73,8 @@ REAL_IMPLICIT <- function(data, parameter= NULL) {
       res <- implicit(init_X = X, init_Y = Y, 
                       C=C, P=P, 
                       lambda=lambda, batches = maxit, 
-                      epsilon = 0.01, checkInterval = 10) 
+                      epsilon = 0.01, checkInterval = 10,
+                      cores = model$num_cores_per_batch) 
     ))
     
     

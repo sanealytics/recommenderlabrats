@@ -4,8 +4,9 @@ using namespace Rcpp;
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::plugins(openmp)]]
 
-// compile with these flags to make this parallel
+// Presumably no need to compile with these flags to make this parallel anymore
 // Sys.setenv("PKG_CXXFLAGS" = "-fopenmp")
 // Sys.setenv("PKG_LIBS" = "-fopenmp")
 // TODO: Add stopping condition by tolerance
@@ -14,7 +15,8 @@ using namespace arma;
 
 
 // [[Rcpp::export]]
-void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda) {
+void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, 
+double lambda, int cores) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
@@ -24,7 +26,7 @@ void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, co
   arma::mat fact_eye = eye(num_prods, num_prods);
   arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
 
-#pragma omp parallel for
+#pragma omp parallel for num_threads(cores)
   for (int u = 0; u < C.n_rows; u++) {
     arma::mat Cu = diagmat(C.row(u));
     arma::mat YTCuIY = Y.t() * (Cu) * Y;
@@ -38,7 +40,8 @@ void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, co
 }
 
 // [[Rcpp::export]]
-void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda) {
+void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, const arma::mat & C, 
+double lambda, int cores) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
@@ -48,7 +51,7 @@ void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, co
   arma::mat fact_eye = eye(num_users, num_users);
   arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
 
-#pragma omp parallel for
+#pragma omp parallel for num_threads(cores)
   for (int i = 0; i < C.n_cols; i++) {
     arma::mat Ci = diagmat(C.col(i));
     arma::mat YTCiIY = X.t() * (Ci) * X;
@@ -69,7 +72,7 @@ double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & 
 // [[Rcpp::export]]
 List implicit(const arma::mat & init_X, const arma::mat & init_Y, const arma::mat & P, const arma::mat & C,
         double lambda, int batches,
-        double epsilon, int checkInterval) {
+        double epsilon, int checkInterval, int cores = 1) {
   //const double epsilon = 0.1;
   //const int checkInterval = 1;
   arma::mat X(init_X); arma::mat Y(init_Y);
@@ -79,8 +82,8 @@ List implicit(const arma::mat & init_X, const arma::mat & init_Y, const arma::ma
 
   for (int b = 1; b <= batches; b++) {
     Rprintf("batch %d", b);
-    updateImplicitX(X, Y, P, C, lambda);
-    updateImplicitY(X, Y, P, C, lambda);
+    updateImplicitX(X, Y, P, C, lambda, cores);
+    updateImplicitY(X, Y, P, C, lambda, cores);
 
     double J = implicitCost(X, Y, P, C, lambda);
     Rprintf("\tcost\t%f\n", J);

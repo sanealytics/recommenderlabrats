@@ -86,8 +86,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // updateImplicitX
-void updateImplicitX(arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda);
-RcppExport SEXP recommenderlabrats_updateImplicitX(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+void updateImplicitX(arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda, int cores);
+RcppExport SEXP recommenderlabrats_updateImplicitX(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     {
         Rcpp::RNGScope __rngScope;
@@ -96,14 +96,15 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
         Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
         Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
-        updateImplicitX(X, Y, P, C, lambda);
+        Rcpp::traits::input_parameter< int >::type cores(coresSEXP );
+        updateImplicitX(X, Y, P, C, lambda, cores);
     }
     return R_NilValue;
 END_RCPP
 }
 // updateImplicitY
-void updateImplicitY(const arma::mat& X, arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda);
-RcppExport SEXP recommenderlabrats_updateImplicitY(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+void updateImplicitY(const arma::mat& X, arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda, int cores);
+RcppExport SEXP recommenderlabrats_updateImplicitY(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     {
         Rcpp::RNGScope __rngScope;
@@ -112,7 +113,8 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
         Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
         Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
-        updateImplicitY(X, Y, P, C, lambda);
+        Rcpp::traits::input_parameter< int >::type cores(coresSEXP );
+        updateImplicitY(X, Y, P, C, lambda, cores);
     }
     return R_NilValue;
 END_RCPP
@@ -137,8 +139,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // implicit
-List implicit(const arma::mat& init_X, const arma::mat& init_Y, const arma::mat& P, const arma::mat& C, double lambda, int batches, double epsilon, int checkInterval);
-RcppExport SEXP recommenderlabrats_implicit(SEXP init_XSEXP, SEXP init_YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP batchesSEXP, SEXP epsilonSEXP, SEXP checkIntervalSEXP) {
+List implicit(const arma::mat& init_X, const arma::mat& init_Y, const arma::mat& P, const arma::mat& C, double lambda, int batches, double epsilon, int checkInterval, int cores = 1);
+RcppExport SEXP recommenderlabrats_implicit(SEXP init_XSEXP, SEXP init_YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP batchesSEXP, SEXP epsilonSEXP, SEXP checkIntervalSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -151,7 +153,8 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< int >::type batches(batchesSEXP );
         Rcpp::traits::input_parameter< double >::type epsilon(epsilonSEXP );
         Rcpp::traits::input_parameter< int >::type checkInterval(checkIntervalSEXP );
-        List __result = implicit(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval);
+        Rcpp::traits::input_parameter< int >::type cores(coresSEXP );
+        List __result = implicit(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval, cores);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
