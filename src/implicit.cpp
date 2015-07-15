@@ -65,7 +65,11 @@ double lambda, int cores) {
 
 // [[Rcpp::export]]
 double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda) {
-  return accu(dot(C, square(P - X * Y.t())) + 
+  double delta = 0.0;
+  for (int u = 0; u < C.n_rows; u++) {
+    delta += accu(dot(C.row(u), square(P.row(u) - X.row(u) * Y.t())));
+  }
+  return (delta + 
     lambda * (pow(accu(X),2) + pow(accu(Y),2)));
 }
 
