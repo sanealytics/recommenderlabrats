@@ -16,7 +16,7 @@ using namespace arma;
 
 // [[Rcpp::export]]
 void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, 
-double lambda, int cores) {
+  double lambda, int cores) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
@@ -41,7 +41,7 @@ double lambda, int cores) {
 
 // [[Rcpp::export]]
 void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, const arma::mat & C, 
-double lambda, int cores) {
+  double lambda, int cores) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
@@ -64,8 +64,10 @@ double lambda, int cores) {
 }
 
 // [[Rcpp::export]]
-double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda) {
+double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda,
+  int cores) {
   double delta = 0.0;
+#pragma omp parallel for num_threads(cores)
   for (int u = 0; u < C.n_rows; u++) {
     delta += accu(dot(C.row(u), square(P.row(u) - X.row(u) * Y.t())));
   }
@@ -82,14 +84,14 @@ List implicit(const arma::mat & init_X, const arma::mat & init_Y, const arma::ma
   arma::mat X(init_X); arma::mat Y(init_Y);
   double prevJ;
 
-  Rprintf("Initial cost\t%d\n", implicitCost(X, Y, P, C, lambda));
+  Rprintf("Initial cost\t%d\n", implicitCost(X, Y, P, C, lambda, cores));
 
   for (int b = 1; b <= batches; b++) {
     Rprintf("batch %d", b);
     updateImplicitX(X, Y, P, C, lambda, cores);
     updateImplicitY(X, Y, P, C, lambda, cores);
 
-    double J = implicitCost(X, Y, P, C, lambda);
+    double J = implicitCost(X, Y, P, C, lambda, cores);
     Rprintf("\tcost\t%f\n", J);
   }
 

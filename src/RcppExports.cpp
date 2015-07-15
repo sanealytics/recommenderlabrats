@@ -120,8 +120,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // implicitCost
-double implicitCost(const arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda);
-RcppExport SEXP recommenderlabrats_implicitCost(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+double implicitCost(const arma::mat& X, const arma::mat& Y, const arma::mat& P, const arma::mat& C, double lambda, int cores);
+RcppExport SEXP recommenderlabrats_implicitCost(SEXP XSEXP, SEXP YSEXP, SEXP PSEXP, SEXP CSEXP, SEXP lambdaSEXP, SEXP coresSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
@@ -131,7 +131,8 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< const arma::mat& >::type P(PSEXP );
         Rcpp::traits::input_parameter< const arma::mat& >::type C(CSEXP );
         Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP );
-        double __result = implicitCost(X, Y, P, C, lambda);
+        Rcpp::traits::input_parameter< int >::type cores(coresSEXP );
+        double __result = implicitCost(X, Y, P, C, lambda, cores);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

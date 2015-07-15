@@ -25,8 +25,8 @@ updateImplicitY <- function(X, Y, P, C, lambda, cores) {
     invisible(.Call('recommenderlabrats_updateImplicitY', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda, cores))
 }
 
-implicitCost <- function(X, Y, P, C, lambda) {
-    .Call('recommenderlabrats_implicitCost', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda)
+implicitCost <- function(X, Y, P, C, lambda, cores) {
+    .Call('recommenderlabrats_implicitCost', PACKAGE = 'recommenderlabrats', X, Y, P, C, lambda, cores)
 }
 
 implicit <- function(init_X, init_Y, P, C, lambda, batches, epsilon, checkInterval, cores = 1L) {
