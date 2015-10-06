@@ -1,5 +1,7 @@
 #include <RcppArmadillo.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 using namespace Rcpp;
 using namespace arma;
 
@@ -72,7 +74,7 @@ double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & 
     delta += accu(dot(C.row(u), square(P.row(u) - X.row(u) * Y.t())));
   }
   return (delta + 
-    lambda * (pow(accu(X),2) + pow(accu(Y),2)));
+    lambda * (pow(accu(X),2) + pow(accu(Y),2))) / (C.n_rows * C.n_cols);
 }
 
 // [[Rcpp::export]]
