@@ -1,8 +1,11 @@
 #include <RcppArmadillo.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 using namespace Rcpp;
 
 // [[Rcpp::depends(RcppArmadillo)]]
+// [[Rcpp::plugins(openmp)]]
 
 arma::mat calculate_delta(const arma::mat & X, const arma::mat & Theta, const arma::mat & Y, const arma::mat & R) {
   // Model error = actual - prediction
