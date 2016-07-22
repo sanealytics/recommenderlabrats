@@ -13,28 +13,28 @@ using namespace arma;
 // Sys.setenv("PKG_LIBS" = "-fopenmp")
 // TODO: Add stopping condition by tolerance
 // TODO: Add early stopping
-// TODO: Use sparse arma::matrices wherever possible
+// TODO: Use sparse arma::sp_matrices wherever possible
 
 
 // [[Rcpp::export]]
-void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, 
+void updateImplicitX(arma::sp_mat & X, const arma::sp_mat & Y, const arma::sp_mat & P, const arma::sp_mat & C, 
   double lambda, int cores) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
 
   Rprintf(".");
-  arma::mat YTY = Y.t() * Y;
-  arma::mat fact_eye = eye(num_prods, num_prods);
-  arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
+  arma::sp_mat YTY = Y.t() * Y;
+  arma::sp_mat fact_eye = arma::speye(num_prods, num_prods);
+  arma::sp_mat lambda_eye = lambda * speye(num_factors, num_factors);
 
 #pragma omp parallel for num_threads(cores)
   for (int u = 0; u < C.n_rows; u++) {
-    arma::mat Cu = diagmat(C.row(u));
-    arma::mat YTCuIY = Y.t() * (Cu) * Y;
-    arma::mat YTCupu = Y.t() * (Cu + fact_eye) * P.row(u).t();
-    arma::mat WuT = YTY + YTCuIY + lambda_eye;
-    arma::mat xu = solve(WuT, YTCupu);
+    arma::sp_mat Cu = diagmat(C.row(u));
+    arma::sp_mat YTCuIY = Y.t() * (Cu) * Y;
+    arma::sp_mat YTCupu = Y.t() * (Cu + fact_eye) * P.row(u).t();
+    arma::sp_mat WuT = YTY + YTCuIY + lambda_eye;
+    arma::sp_mat xu = arma::spsolve(WuT, YTCupu, "superlu");
 
     // Update gradient -- maybe a slow operation in parallel?
     X.row(u) = xu.t();
@@ -42,23 +42,23 @@ void updateImplicitX(arma::mat & X, const arma::mat & Y, const arma::mat & P, co
 }
 
 // [[Rcpp::export]]
-void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, const arma::mat & C, 
+void updateImplicitY(const arma::sp_mat & X, arma::sp_mat & Y, const arma::sp_mat & P, const arma::sp_mat & C, 
   double lambda, int cores) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
 
   Rprintf(".");
-  arma::mat XTX = X.t() * X;
-  arma::mat fact_eye = eye(num_users, num_users);
-  arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
+  arma::sp_mat XTX = X.t() * X;
+  arma::sp_mat fact_eye = arma::speye(num_users, num_users);
+  arma::sp_mat lambda_eye = lambda * arma::speye(num_factors, num_factors);
 
 #pragma omp parallel for num_threads(cores)
   for (int i = 0; i < C.n_cols; i++) {
-    arma::mat Ci = diagmat(C.col(i));
-    arma::mat YTCiIY = X.t() * (Ci) * X;
-    arma::mat YTCipi = X.t() * (Ci + fact_eye) * P.col(i);
-    arma::mat yu = solve(XTX + YTCiIY + lambda_eye, YTCipi);
+    arma::sp_mat Ci = diagmat(C.col(i));
+    arma::sp_mat YTCiIY = X.t() * (Ci) * X;
+    arma::sp_mat YTCipi = X.t() * (Ci + fact_eye) * P.col(i);
+    arma::sp_mat yu = arma::spsolve(XTX + YTCiIY + lambda_eye, YTCipi);
 
     // Update gradient
     Y.row(i) = yu.t();
@@ -66,7 +66,7 @@ void updateImplicitY(const arma::mat & X, arma::mat & Y, const arma::mat & P, co
 }
 
 // [[Rcpp::export]]
-double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda,
+double implicitCost(const arma::sp_mat & X, const arma::sp_mat & Y, const arma::sp_mat & P, const arma::sp_mat & C, double lambda,
   int cores) {
   double delta = 0.0;
 #pragma omp parallel for num_threads(cores)
@@ -78,12 +78,12 @@ double implicitCost(const arma::mat & X, const arma::mat & Y, const arma::mat & 
 }
 
 // [[Rcpp::export]]
-List implicit(const arma::mat & init_X, const arma::mat & init_Y, const arma::mat & P, const arma::mat & C,
+List implicit(const arma::sp_mat & init_X, const arma::sp_mat & init_Y, const arma::sp_mat & P, const arma::sp_mat & C,
         double lambda, int batches,
         double epsilon, int checkInterval, int cores = 1) {
   //const double epsilon = 0.1;
   //const int checkInterval = 1;
-  arma::mat X(init_X); arma::mat Y(init_Y);
+  arma::sp_mat X(init_X); arma::sp_mat Y(init_Y);
   double prevJ;
 
   Rprintf("Initial cost\t%d\n", implicitCost(X, Y, P, C, lambda, cores));
@@ -106,27 +106,27 @@ List implicit(const arma::mat & init_X, const arma::mat & init_Y, const arma::ma
 }
 
 // [[Rcpp::export]]
-arma::mat explain_predict(const arma::mat & X, const arma::mat & Y, const arma::mat & P, const arma::mat & C, double lambda, int u) {
+arma::sp_mat explain_predict(const arma::sp_mat & X, const arma::sp_mat & Y, const arma::sp_mat & P, const arma::sp_mat & C, double lambda, int u) {
   int num_users = C.n_rows;
   int num_prods = C.n_cols;
   int num_factors = Y.n_cols; // or X.n_cols
 
   Rprintf("In explain_predict()");
-  arma::mat YTY = Y.t() * Y;
-  arma::mat fact_eye = eye(num_prods, num_prods);
-  arma::mat lambda_eye = lambda * eye(num_factors, num_factors);
+  arma::sp_mat YTY = Y.t() * Y;
+  arma::sp_mat fact_eye = speye(num_prods, num_prods);
+  arma::sp_mat lambda_eye = lambda * speye(num_factors, num_factors);
 
-  arma::mat Cu = diagmat(C.row(u));
-  arma::mat YTCuIY = Y.t() * (Cu) * Y;
-  arma::mat YTCupu = Y.t() * (Cu + fact_eye) * P.row(u).t();
-  arma::mat WuT = YTY + YTCuIY + lambda_eye;
-  //arma::mat xu = solve(WuT, YTCupu);
+  arma::sp_mat Cu = diagmat(C.row(u));
+  arma::sp_mat YTCuIY = Y.t() * (Cu) * Y;
+  arma::sp_mat YTCupu = Y.t() * (Cu + fact_eye) * P.row(u).t();
+  arma::sp_mat WuT = YTY + YTCuIY + lambda_eye;
+  //arma::sp_mat xu = solve(WuT, YTCupu);
   
-  arma::mat sij = Y * solve(WuT, Y.t());
-  arma::mat p = sij * Cu;
+  arma::sp_mat sij = Y * spsolve(WuT, Y.t());
+  arma::sp_mat p = sij * Cu;
   
-//  Numericarma::matrix parma::mat(wrap(p));
-//  parma::mat.attr("colnames") = C.attr("colnames");
+//  Numericarma::sp_matrix parma::sp_mat(wrap(p));
+//  parma::sp_mat.attr("colnames") = C.attr("colnames");
   
 //  colnames(p) = colnames(C);
 //  rownames(p) = colnames(C);
